@@ -18,14 +18,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public Optional<Employee> saveEmployee(Employee employee) {
+    public Employee saveEmployee(Employee employee) {
 
         Optional<Employee> savedEmployee = employeeRepository.findEmployeeByEmail(employee.getEmail());
 
         if (savedEmployee.isPresent()) {
             throw new ResourcesNotFoundException("tEmployee already exist with given email : " + employee.getEmail());
         }
-        return Optional.ofNullable(employeeRepository.save(employee));
+        return employeeRepository.save(employee);
     }
 
     @Override

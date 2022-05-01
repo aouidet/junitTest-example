@@ -55,7 +55,7 @@ public class EmployeeServiceTests {
         given(employeeRepository.save(employeeMock)).willReturn(employeeMock);
 
         // WHEN
-        Employee savedEmployee = employeeService.saveEmployee(employeeMock).get();
+        Employee savedEmployee = employeeService.saveEmployee(employeeMock);
 
         // THEN
         Assertions.assertThat(savedEmployee).isNotNull();

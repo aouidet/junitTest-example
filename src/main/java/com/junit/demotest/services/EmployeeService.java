@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface EmployeeService {
 
-    Optional<Employee> saveEmployee(Employee employee);
+    Employee saveEmployee(Employee employee);
 
     List<Employee> getAllEmployee();
 

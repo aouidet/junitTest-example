@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.util.List;
+
 @RestController
 @RequestScope
 @RequestMapping("/api/employees")
@@ -19,5 +21,11 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.CREATED)
     public Employee createEmployee(@RequestBody Employee employee) {
         return employeeService.saveEmployee(employee);
+    }
+
+    @GetMapping("/getAll")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> getAllEmployee() {
+        return employeeService.getAllEmployee();
     }
 }

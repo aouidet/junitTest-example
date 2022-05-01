@@ -13,12 +13,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTests {
@@ -71,8 +74,89 @@ public class EmployeeServiceTests {
         // WHEN
         // THEN
         verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("junit test for getAll employees list")
+    public void shouldGetAllEmployee_whenFindAll_thenReturnEmployeesList() {
+
+        // GIVEN - precondition
+        Employee employee1 = Employee.builder().id(1L).firstname("zouhaier").lastName("aouidet").email("zouhaier@gmail.com").build();
+        given(employeeRepository.findAll()).willReturn(List.of(employeeMock, employee1));
+
+        // WHEN
+        List<Employee> expectedEmployeeList = employeeService.getAllEmployee();
+
+        // THEN
+        Assertions.assertThat(expectedEmployeeList.size()).isEqualTo(2);
+        Assertions.assertThat(expectedEmployeeList).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("junit test for empty employees list")
+    public void shouldGetEmptyEmployee_whenFindAll_thenReturnEmptyEmployeesList() {
+
+        // GIVEN
+        given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+
+        // WHEN
+        List<Employee> expectedEmployeeList = employeeService.getAllEmployee();
+
+        // THEN
+        Assertions.assertThat(expectedEmployeeList).isEmpty();
+        Assertions.assertThat(expectedEmployeeList.size()).isEqualTo(0);
+
+    }
 
 
+    @Test
+    @DisplayName("junit test for find by id")
+    public void shouldGetEmployee_whenFindById_thenReturnEmptyEObject() {
+
+        // GIVEN
+        given(employeeRepository.findById(anyLong())).willReturn(Optional.of(employeeMock));
+
+        // WHEN
+        Employee expectedEmployee = employeeService.getEmployeeById(employeeMock.getId()).get();
+
+        // THEN
+        Assertions.assertThat(expectedEmployee).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("junit test for update employee object")
+    public void givenUpdatedEmployee_whenSaveOrUpdate_thenReturnUpdatedEmployee() {
+
+        // given - precondition or setup
+        given(employeeRepository.save(employeeMock)).willReturn(employeeMock);
+        employeeMock.setFirstname("Zouhaier");
+        employeeMock.setEmail("zouhaier@gmail.com");
+
+        // when - action or the behavior that going test
+        Employee updatedEmployee = employeeService.updateEmployee(employeeMock);
+
+        // then - verify the output
+        Assertions.assertThat(updatedEmployee).isNotNull();
+        Assertions.assertThat(employeeMock.getFirstname()).isEqualTo("Zouhaier");
+        Assertions.assertThat(employeeMock.getEmail()).isEqualTo("zouhaier@gmail.com");
+    }
+
+    @Test
+    @DisplayName("junit test for delete employee object")
+    public void given_when_then() {
+
+        // given - precondition or setup
+
+        Long employeeId = 1L;
+        willDoNothing().given(employeeRepository).deleteById(1L);
+
+        // when - action or the behavior that going test
+        employeeService.deleteEmployee(employeeId);
+
+        // then - verify the output
+        verify(employeeRepository, times(1)).deleteById(employeeId);
     }
 
 }
